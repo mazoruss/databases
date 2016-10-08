@@ -11,11 +11,11 @@ var queryString = {
   },
 
   getRoomId: function(roomname) {
-    return 'select id from room where name="' + roomname + '";';
+    return 'select id from room where roomname="' + roomname + '";';
   },
 
   insertRoom: function(roomname) {
-    return 'insert ignore into room(name) values ("' + roomname + '")';
+    return 'insert ignore into room(roomname) values ("' + roomname + '")';
   },
 };
 
@@ -45,7 +45,7 @@ module.exports = {
     get: function () {
       var promise = new Promise(function(resolve, reject) {
         var connection = db.getConnection();
-        connection.query('select * from messages, user where messages.user_id=user.id;', (err, rows, fields) => {
+        connection.query('select * from messages, user, room where messages.user_id=user.id and messages.room_id = room.id;', (err, rows, fields) => {
           resolve(rows);
         });
       });
