@@ -3,28 +3,36 @@ var Promise = require('bluebird');
 
 var queryString = {
   getUserId: function(username) {
-    return 'insert ignore into user(username) values ("' + username + '"); select id from user where username="' + username + '";';
+    return 'select id from user where username="' + username + '";';
+  },
+
+  insertUser: function(username) {
+    return 'insert ignore into user(username) values ("' + username + '");';
   },
 
   getRoomId: function(roomname) {
-    return 'insert ignore into room(name) values ("' + roomname + '"); select id from room where name="' + roomname + '";';
+    return 'select id from room where name="' + roomname + '";';
+  },
+
+  insertRoom: function(roomname) {
+    return 'insert ignore into room(name) values ("' + roomname + '")';
   },
 };
 
 
 
-var queryUserPromise = function(connection, username) {
+var queryUserPromise = function(connection, username, method) {
   var promise = new Promise(function(resolve, reject) {
-    connection.query(queryString.getUserId(username), function(err, rows, fields) { 
+    connection.query(queryString[method](username), function(err, rows, fields) { 
       err ? reject(err) : resolve(rows[0]);
     });
   });
   return promise;
 };
 
-var queryRoomPromise = function(connection, roomname) {
+var queryRoomPromise = function(connection, roomname, method) {
   var promise = new Promise(function(resolve, reject) {
-    connection.query(queryString.getRoomId(roomname), function(err, rows, fields) { 
+    connection.query(queryString[method](roomname), function(err, rows, fields) { 
       err ? reject(err) : resolve(rows[0]);
     });
   });
@@ -47,15 +55,31 @@ module.exports = {
       
       var connection = db.getConnection();
       var username = data.username;
-      var content = data.text;
+      var text = data.text;
       var roomname = data.roomname;
       var userId;
+      var roomId;
 
-      queryUserPromise(connection, username).then(obj => {
-        userId = obj.id;
-        connection.query(`insert into messages(text, user_id, roomname) values ("${content}", "${userId}", "${roomname}");`, err => console.log(err));
-      });
+      queryUserPromise(connection, username, 'insertUser')
+        .then(() => {
+          return queryRoomPromise(connection, roomname, 'insertRoom');
+        })
+        .then(() => {
+          return queryUserPromise(connection, username, 'getUserId');
+        })
+        .then(obj => {
+          userId = obj.id;
+          return queryRoomPromise(connection, roomname, 'getRoomId');
+        })
+        .then(obj => {
+          roomId = obj.id;
+          connection.query(`insert into messages(text, user_id, room_id) values ("${text}", "${userId}", "${roomId}");`, err => console.log(err));
+        });
 
+      // queryUserPromise(connection, username).then(obj => {
+      //   userId = obj.id;
+      //   connection.query(`insert into messages(text, user_id, roomname) values ("${content}", "${userId}", "${roomname}");`, err => console.log(err));
+      // });
 
 
       // queryUserPromise(connection, username, 'getUserId').then(obj => {
