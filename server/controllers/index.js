@@ -9,7 +9,6 @@ module.exports = {
       };
       var promisedGet = models.messages.get(req);
       promisedGet.then(data => {
-        console.log('promisedGet: ', data);
         returnObj.results = data;
         res.json(returnObj);
       });

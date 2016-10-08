@@ -30,9 +30,9 @@ var app = {
     app.fetch(false);
 
     // Poll for new messages
-    // setInterval(function() {
-    //   app.fetch(true);
-    // }, 3000);
+    setInterval(function() {
+      app.fetch(true);
+    }, 3000);
   },
 
   send: function(message) {
@@ -74,14 +74,14 @@ var app = {
         // Get the last message
         var mostRecentMessage = data.results[data.results.length - 1];
         // Only bother updating the DOM if we have a new message
-        if (mostRecentMessage.createdAt !== app.lastMessageDate) {
+        // if (mostRecentMessage.createdAt !== app.lastMessageDate) {
           // Update the UI with the fetched rooms
-          app.renderRoomList(data.results);
-          // Update the UI with the fetched messages
-          app.renderMessages(data.results, animate);
-          // Store the ID of the most recent message
-          app.lastMessageDate = mostRecentMessage.createdAt;
-        }
+        app.renderRoomList(data.results);
+        // Update the UI with the fetched messages
+        app.renderMessages(data.results, animate);
+        // Store the ID of the most recent message
+        app.lastMessageDate = mostRecentMessage.createdAt;
+        // }
       },
       error: function(error) {
         console.error('chatterbox: Failed to fetch messages', error);
