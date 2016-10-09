@@ -39,7 +39,9 @@ var Promise = require('bluebird');
 //   return promise;
 // };
 
-
+// ************************************************************************************
+// ******************** MODEL NOT USED ANYMORE DB CONNECTION IN CONTROLLER ************
+// ************************************************************************************
 module.exports = {
   messages: {
     get: function () {

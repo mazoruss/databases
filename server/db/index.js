@@ -1,19 +1,3 @@
-var mysql = require('mysql');
-
-
-exports.getConnection = function() {
-
-  var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'hr48',
-    database: 'chat'
-  });
-
-  connection.connect();
-
-  return connection;
-};
 
 var Sequelize = require('sequelize');
 var db = new Sequelize('chat', 'root', 'hr48');
@@ -73,7 +57,23 @@ exports.dbGet = function(callback) {
     });
 };
 
+// // deprecated due to use of ORM
+// var mysql = require('mysql');
 
+
+// exports.getConnection = function() {
+
+//   var connection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: 'hr48',
+//     database: 'chat'
+//   });
+
+//   connection.connect();
+
+//   return connection;
+// };
 
 
 

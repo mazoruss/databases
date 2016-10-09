@@ -19,8 +19,8 @@ module.exports = {
       // });
     }, // a function which handles a get request for all messages
     post: function (req, res) {
-
-      models.messages.post(req.body);
+      db.dbPost(req.body);
+      // models.messages.post(req.body);
     } // a function which handles posting a message to the database
   },
 
