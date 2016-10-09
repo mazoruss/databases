@@ -23,14 +23,19 @@ var User = db.define('User', {
 });
 
 var Messages = db.define('Message', {
-  userid: Sequelize.INTEGER,
+  // userid: Sequelize.INTEGER,
   text: Sequelize.STRING,
-  roomid: Sequelize.STRING
+  // roomid: Sequelize.STRING
 });
 
 var Rooms = db.define('Room', {
   roomname: {type: Sequelize.STRING, unique: true},
 });
+
+User.hasMany(Messages);
+Rooms.hasMany(Messages);
+Messages.belongsTo(User);
+Messages.belongsTo(Rooms);
 
 
 exports.dbPost = function(messageObj) {
@@ -55,7 +60,71 @@ exports.dbPost = function(messageObj) {
       return roomId = room[0].dataValues.id;
     })
     .then(function() {
-      return Messages.create({userid: userId, roomid: roomId, text: messageObj.text});
+      return Messages.create({UserId: userId, RoomId: roomId, text: messageObj.text});
     });
     // .then(() => { db.close(); });
 };
+
+exports.dbGet = function(callback) {
+  
+  db.query('SELECT * FROM messages, users, rooms WHERE messages.UserId = users.id and messages.RoomId = rooms.id;')
+    .spread(function(rows, metadata) {
+      callback(rows);
+    });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

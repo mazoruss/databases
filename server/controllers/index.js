@@ -1,5 +1,6 @@
 var models = require('../models');
 var Promise = require('bluebird');
+var db = require('../db');
 
 module.exports = {
   messages: {
@@ -7,11 +8,15 @@ module.exports = {
       var returnObj = {
         results: []
       };
-      var promisedGet = models.messages.get(req);
-      promisedGet.then(data => {
+      db.dbGet( data => {
         returnObj.results = data;
         res.json(returnObj);
       });
+      // var promisedGet = models.messages.get(req);
+      // promisedGet.then(data => {
+      //   returnObj.results = data;
+      //   res.json(returnObj);
+      // });
     }, // a function which handles a get request for all messages
     post: function (req, res) {
 
